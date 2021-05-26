@@ -1,3 +1,4 @@
+  
 let transactions = [];
 let myChart;
 
@@ -96,7 +97,8 @@ function sendTransaction(isAdding) {
   let transaction = {
     name: nameEl.value,
     value: amountEl.value,
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    isInDB: true
   };
 
   // if subtracting funds, convert amount to negative number
@@ -130,12 +132,14 @@ function sendTransaction(isAdding) {
     }
     else {
       // clear form
+      saveRecord(data)
       nameEl.value = "";
       amountEl.value = "";
     }
   })
   .catch(err => {
     // fetch failed, so save in indexed db
+    transaction.isInDB = false;
     saveRecord(transaction);
 
     // clear form
@@ -151,3 +155,5 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
+
+refreshIndexDB();
